@@ -1,5 +1,4 @@
-var UserDb = require('../model/model');
-
+const Userdb = require('../model/model');
 // create and save new user
 
 exports.create = (req,res)=>{
@@ -10,7 +9,7 @@ exports.create = (req,res)=>{
     }
 
     // new user
-    const user = new UserDb({
+    const user = new Userdb({
         name:req.body.name,
         email:req.body.email,
         gender:req.body.gender,
@@ -28,7 +27,7 @@ exports.create = (req,res)=>{
 }
 // retrieve and return all users / retrive and return a single user
 exports.find = (req,res)=>{
-    UserDb.find()
+    Userdb.find()
     .then(user =>{
         res.send(user)
     })
@@ -39,7 +38,21 @@ exports.find = (req,res)=>{
 
 // Update a new idetified user by user id
 exports.update = (req,res)=>{
-    
+    if(!req.body){
+        return res.status(400).send({message: "Data to update can not be empty"})
+    }
+    const id = req.params.id;
+    Userdb.findByIdAndUpdate(id, req.body, {useFindAndModify:false})
+    .then(data=>{
+        if(!data){
+            res.status(404).send({message: `Cannor update user with $(id), maybe user not found`})
+        }else{
+            res.send(data)
+        }
+    })
+    .catch(err=>{
+        res.status(500).send({message: "Error update user informtaion"})
+    })
 }
 
 // Delete a user with soecified user id in the request
