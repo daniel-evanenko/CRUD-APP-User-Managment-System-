@@ -27,13 +27,30 @@ exports.create = (req,res)=>{
 }
 // retrieve and return all users / retrive and return a single user
 exports.find = (req,res)=>{
-    Userdb.find()
-    .then(user =>{
-        res.send(user)
-    })
-    .catch(err =>{
-        res.status(500).send({message: err.message ||"Error Occured while retriving user information"})
-    })
+
+    if(req.query.id){
+      const id = req.query.id;
+      
+      Userdb.findById(id)
+      .then(data =>{
+        if(!data){
+           res.status(404).send({message: "Could not found user with id "+id}) 
+        }else{
+            res.send(data)
+        }
+      }).catch(err =>{
+        res.status(500).send({message:"Error retriving user with id "+id})
+      })
+    }
+    else{
+        Userdb.find()
+        .then(user =>{
+            res.send(user)
+        })
+        .catch(err =>{
+            res.status(500).send({message: err.message ||"Error Occured while retriving user information"})
+        })
+    }
 }
 
 // Update a new idetified user by user id
@@ -68,7 +85,7 @@ exports.delete = (req,res)=>{
             res.send({message:"User was deleted succsessfully!"})
         }
     }).catch(err=>{
-        res.status(500).send({message: "Could not delete user with id="+id})
+        res.status(500).send({message:"Could not delete user with id "+id})
     })
     
 }
