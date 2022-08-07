@@ -58,5 +58,17 @@ exports.update = (req,res)=>{
 // Delete a user with soecified user id in the request
 
 exports.delete = (req,res)=>{
+    const id = req.params.id;
+    
+    Userdb.findByIdAndDelete(id)
+    .then(data=>{
+        if(!data){
+            res.status(404).send({message: `Cannot delete with $(id), Maybe id is wrong`})
+        }else{
+            res.send({message:"User was deleted succsessfully!"})
+        }
+    }).catch(err=>{
+        res.status(500).send({message: "Could not delete user with id="+id})
+    })
     
 }
