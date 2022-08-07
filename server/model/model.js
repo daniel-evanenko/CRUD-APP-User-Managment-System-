@@ -12,7 +12,9 @@ var schema = new mongoose.Schema({
     },
     gender:String,
     status:String
-})
+}
+//,{ typeKey: '$type' }
+)
 
 const Userdb = mongoose.model('userdb',schema);
 
